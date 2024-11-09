@@ -44,6 +44,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   // リサイズ時の処理を設定
   window.addEventListener('resize', app.resize, false);
   // WebGLApp.init メソッドには、HTML に書かれた canvas の id 属性名を指定
+  // ★★ WebGL API ではない
   app.init('webgl-canvas');
   /**
    * load メソッドは Promise を返します。
@@ -55,6 +56,7 @@ window.addEventListener('DOMContentLoaded', async () => {
    * async/await 構文を使うことで、非同期処理を同期処理のように実行順どおりに記
    * 述することができます。
    */
+  // ★★ 読み込みが終わらないと、次の行に処理が移行しないようにしている
   await app.load(); // await を使って Promise の処理を記述
   app.setup();
   app.render();
@@ -99,10 +101,13 @@ class WebGLApp {
     }
     // canvas から WebGL コンテキスト取得を試みる
     this.gl = this.canvas.getContext('webgl', option);
+    // ★★ this.gl.xxxx ← これは WebGL API
     if (this.gl == null) {
       // WebGL コンテキストが取得できない場合はエラー
+      // ★★ 現在では取得できないことはほぼ無い
       throw new Error('webgl not supported');
     }
+    // ★★ init の呼び出しが無事に終わると、this.gl には、WebGL のコンテキストが取れてる状態になる
   }
   /**
    * シェーダやテクスチャ用の画像など非同期で読み込みする処理を行う。
@@ -123,9 +128,11 @@ class WebGLApp {
       // ※シェーダ側の attribute 変数と揃える
       attribute: [
         'position',
+        // 'color',
       ],
       stride: [
-        3,
+        3, // ★★ データの長さ vec3 == 3 (vec3 => 要素が3つあるベクトル)
+        // 4,
       ],
     });
   }
@@ -138,6 +145,8 @@ class WebGLApp {
     // 一度リサイズ処理を行っておく
     this.resize();
     // 背景を何色でクリアするかを 0.0 ～ 1.0 の RGBA で指定する
+     // ★★ vec4(1.0, 1.0, 1.0, 1.0) が完全に不透明な白
+    // ★★ 色を指定してるだけで、クリアは行っていない。
     this.gl.clearColor(0.1, 0.1, 0.1, 1.0);
     // このサンプルでは一度描画するのみなので running は false のままにしておく
     this.running = false;
@@ -187,8 +196,10 @@ class WebGLApp {
     }
 
     // WebGL 上のビューポートも canvas の大きさに揃える
+     // ★★ 左下が原点になる
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     // あらかじめ指定されていたクリアカラーでクリアする
+    // ★★ 色をクリアしている。
     gl.clear(gl.COLOR_BUFFER_BIT);
     // どのプログラムオブジェクトを使うのかを明示する
     this.shaderProgram.use();
@@ -196,6 +207,10 @@ class WebGLApp {
     this.shaderProgram.setAttribute(this.vbo);
 
     // 設定済みの情報を使って、頂点を画面にレンダリングする
+    // ★★ この時点でバインドされている頂点のデータが描画される
+    // ★★ 第一引数：プリミティブタイプ（gl.POINTS）
+    // ★★ 第二引数：開始位置
+    // ★★ 第三引数：頂点の個数（ここでは15あるので、3で割って5つのセットとする）
     gl.drawArrays(gl.POINTS, 0, this.position.length / 3);
   }
 }

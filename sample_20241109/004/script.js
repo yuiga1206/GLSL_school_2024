@@ -64,6 +64,7 @@ class WebGLApp {
     // マウス座標用のイベントを設定 @@@
     window.addEventListener('pointermove', (mouseEvent) => {
       // カーソルの位置はスクリーン空間の値なので、スクリーンの幅や高さで割って正規化する @@@
+      // ★★ 0.0 ~ 1.0 の範囲になる
       const x = mouseEvent.pageX / window.innerWidth;
       const y = mouseEvent.pageY / window.innerHeight;
       // ２倍して１を引くことで、0.0 ～ 1.0 の範囲だった値を -1.0 ～ 1.0 の範囲に変換する @@@
@@ -122,6 +123,7 @@ class WebGLApp {
     this.pointSize = [];
 
     // 頂点を格子状に並べ、座標に応じた色を付け、大きさは揃える @@@
+    // ★★ -1 ~ 1 の範囲に並ぶようになっている
     const COUNT = 20;
     for (let i = 0; i < COUNT; ++i) {
       const x = i / (COUNT - 1);

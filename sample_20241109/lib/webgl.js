@@ -52,6 +52,7 @@ export class WebGLUtility {
    * @return {WebGLShader} シェーダオブジェクト
    */
   static createShader(gl, source, type) {
+    // ★★ webGL API を呼び出して、シェーダオブジェクトを生成
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -116,9 +117,13 @@ export class WebGLUtility {
    * @return {WebGLBuffer} VBO
    */
   static createVbo(gl, data) {
+    // ★★ createBuffer で空のバッファを作る
     const vbo = gl.createBuffer();
+    // ★★ bind(バインド) => 処理の対象となるオブジェクトを、選択している状態
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    // ★★ bufferData => データを流し込みます。今、バインドされているものに対して。
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    // ★★ バインドを解除する
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     return vbo;
   }
@@ -389,6 +394,8 @@ export class ShaderProgram {
       throw new Error('shader program creation failed');
     }
     this.attributeLocation = this.attribute.map((attributeName) => {
+      // ★★ Array.map => 全部の要素をループして、return した値からなる新しい配列を返す
+      // ★★ getAttribLocation == 整数の戻り値が得られ、マイナスだった場合は、その変数が見つからない・使われていない
       const attributeLocation = gl.getAttribLocation(this.program, attributeName);
       if (attributeLocation < 0) {
         console.warn(`"${attributeName}" is an invalid attribute variable`);
@@ -410,6 +417,8 @@ export class ShaderProgram {
    * プログラムオブジェクトを選択状態にする。
    */
   use() {
+    // ★★ 事前に生成してあった、プログラムオブジェクトを有効化（選択）状態にする
+    // ★★ 対象のプログラムオブジェクトにリンクされているシェーダが使われるようになる
     this.gl.useProgram(this.program);
   }
 
@@ -423,6 +432,7 @@ export class ShaderProgram {
     if (Array.isArray(vbo) !== true || vbo.length !== this.attribute.length) {
       throw new Error('vbo or attribute does not match');
     }
+    // ★★ Array.map と同じで、要素を順番に処理する（戻り値の配列を返さない）
     vbo.forEach((v, index) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, v);
       gl.enableVertexAttribArray(this.attributeLocation[index]);

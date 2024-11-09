@@ -6,6 +6,17 @@
  * れてきます。
  */
 attribute vec3 position;
+// attribute vec4 color;
+
+
+// uniform float a; CPU(js) から送られてくる情報
+// uniform float time; js から時間を送る
+// const float a = 10.0; ローカルスコープで宣言した定数
+
+
+// varying vec3 viewPosition;
+
+
 /**
  * 以下にある main 関数が、シェーダ実行時のエントリポイントとなります。
  * 別の言い方をすると、この main 関数内に書かれた処理が、頂点のひとつひとつに対
@@ -14,6 +25,9 @@ attribute vec3 position;
  * ルールはフラグメントシェーダでも同様です。
  */
 void main() {
+  // viewPosition = position;
+  // viewPosition = なんらかの計算結果;
+
   /**
    * 頂点シェーダは、頂点を変換するのが主な仕事です。
    * ここではわかりやすくする意味で一切変換を行っていませんが、将来的には行列
@@ -25,7 +39,11 @@ void main() {
    * います。（それ以外の変換は今回は一切していない）
    * わざわざ変換しているのは、GLSL は型が一致しないと代入できないためです。
    */
+  // ★★ gl_Position がvec4 なので、データを変換しないと代入できない
   gl_Position = vec4(position, 1.0);
+  // ★★ ↓ x方向に 0.2 動かす
+  // gl_Position = vec4(position + vec3(0.2, 0.0, 0.0), 1.0);
+
   /**
    * gl_PointSize は、その変数名に `gl_` と付いていることからも想像できる通り
    * gl_Position と同じビルトインの変数です。
@@ -33,6 +51,9 @@ void main() {
    * float で指定する必要があるので `gl_PointSize = 1;` のように、int 型の数値
    * を代入できないことに注意します。
    */
+  // ★★ ほぼピクセルのサイズ。
+  // ★★ 上限があり、実行環境によって最大値が違う。。
+  // ★★ 案件で使用する際は、何ポイントまでいけるのか、デバイスごとに調べること。
   gl_PointSize = 16.0;
 }
 

@@ -12,6 +12,7 @@ void main() {
   vec4 samplerColor0 = texture2D(textureUnit0, vTexCoord);
   vec4 samplerColor1 = texture2D(textureUnit1, vTexCoord);
   vec4 monochromeColor = texture2D(textureUnit2, vTexCoord);
+  // 黒=小さい　白=大きい　0~1
 
   // モノクロテクスチャを考慮して変化の割合いを決める @@@
   float r = clamp(monochromeColor.r + ratio * 2.0 - 1.0, 0.0, 1.0);

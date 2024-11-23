@@ -97,7 +97,10 @@ class WebGLApp {
 
     this.gl.clearColor(0.1, 0.1, 0.1, 1.0);
     this.gl.clearDepth(1.0); // クリアする際の深度値 @@@
+    // ★★ MAXの 1.0 にしておいて、何が来ても上書きされるようにしておく。
+    // ★★ 0.0 だと上書きされなくなる
     this.gl.enable(this.gl.DEPTH_TEST); // 深度テストを有効にする @@@
+    // this.gl.disable(this.gl.DEPTH_TEST);
   }
   /**
    * ジオメトリ（頂点情報）を構築するセットアップを行う。
@@ -106,10 +109,11 @@ class WebGLApp {
     this.position = [];
     this.color = [];
     // 頂点を格子状に並べ、座標に応じた色を付ける
+     // ★★ 初期配置は、-1 ~ 1 の範囲に等間隔で並んだ状態になる
     const COUNT = 100;
     for (let i = 0; i < COUNT; ++i) {
-      const x = i / (COUNT - 1);
-      const signedX = x * 2.0 - 1.0;
+      const x = i / (COUNT - 1); // ★★ 0.0 ~ 0.99 の範囲
+      const signedX = x * 2.0 - 1.0; // ★★ -1 ~ 1(実際は0.989…)
       for (let j = 0; j < COUNT; ++j) {
         const y = j / (COUNT - 1);
         const signedY = y * 2.0 - 1.0;
@@ -146,21 +150,27 @@ class WebGLApp {
 
     // ビューポートの設定と背景色・深度値のクリア
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+     // ★★ クリアのタイミングで、色だけでなく、深度値もクリア（1.0）する。
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // - 各種行列を生成する ---------------------------------------------------
     // モデル座標変換行列（ここではゆっくりと X 軸回転）
-    const rotateAxis  = v3.create(1.0, 0.0, 0.0); // X 軸回転を掛ける
+     // ★★ 3Dモデルを構成する頂点を直接動かす作用（平行移動・回転・拡大縮小）
+    const rotateAxis  = v3.create(1.0, 0.0, 0.0); // X 軸回転を掛けるための、回転軸を定義している
+     // ★★ v3.create(0.0, 0.0, 1.0)だとZ軸回転
     const rotateAngle = this.uTime * 0.1;         // 回転角は時間由来
     const m = m4.rotate(m4.identity(), rotateAngle, rotateAxis);
+    // const m = m4.identity(); // ★★ identity() は単位行列なので何も変わらない
 
     // ビュー座標変換行列（ここではカメラは固定）
+     // ★★ カメラについてにのパラメータ
     const eye         = v3.create(0.0, 0.0, 3.0); // カメラの位置
     const center      = v3.create(0.0, 0.0, 0.0); // カメラの注視点
     const upDirection = v3.create(0.0, 1.0, 0.0); // カメラの天面の向き
     const v = m4.lookAt(eye, center, upDirection);
 
     // プロジェクション座標変換行列
+     // ★★ カメラで撮影する空間の定義
     const fovy   = 60;                                     // 視野角（度数）
     const aspect = this.canvas.width / this.canvas.height; // アスペクト比
     const near   = 0.1;                                    // ニア・クリップ面までの距離
@@ -170,6 +180,7 @@ class WebGLApp {
     // 行列を乗算して MVP 行列を生成する（行列を掛ける順序に注意、ここでは列優先）
     const vp = m4.multiply(p, v);
     const mvp = m4.multiply(vp, m);
+     // ★★ MVP 行列をシェーダに送る
     // ------------------------------------------------------------------------
 
     // プログラムオブジェクトを指定し、VBO と uniform 変数を設定

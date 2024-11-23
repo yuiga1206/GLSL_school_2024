@@ -140,6 +140,7 @@ class WebGLApp {
           this.planePosition.push(-x, -y, 0.0);
           // 色は割合いから適当に決める（特に深い意味はありません）
           this.planeColor.push(i / COUNT, j / COUNT, 0.5, 1.0);
+          // this.planeColor.push(1.0, 0.0, 0.0, 1.0); // 赤
         }
       }
     }
@@ -164,6 +165,7 @@ class WebGLApp {
           );
           // 色は平面のときとは異なるものにする（特に深い意味はありません）
           this.sphereColor.push(1.0 - i / COUNT, 1.0 - j / COUNT, 0.5, 1.0);
+          // this.sphereColor.push(0.0, 0.0, 1.0, 1.0); // 青
         }
       }
     }

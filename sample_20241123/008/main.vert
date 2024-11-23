@@ -3,7 +3,7 @@ attribute vec3 planePosition;
 attribute vec4 planeColor;
 attribute vec3 spherePosition;
 attribute vec4 sphereColor;
-attribute float offset; // ランダムなオフセット値（0.0 ～ 1.0） @@@
+attribute float offset; // ランダムなオフセット値（0.0 ～ 1.0未満） @@@
 
 uniform float ratio; // 変化の割合い（0.0 ～ 1.0）
 uniform float time;
@@ -16,9 +16,18 @@ void main() {
   // -1.0 ～ 1.0 の範囲を取る position.x を 0.0 ～ 1.0 に変換する
   float unsignedPosition = planePosition.x * 0.5 + 0.5;
   // offset と position.x 由来の値とを合算し、0.5 倍して 0.0 ～ 1.0 に変換
+  // ★★ offset：0.0 ~ 1.0、unsignedPosition：0.0 ~ 1.0
+  // ★★ 二つを足すと最大で2になるので、0.5 をかけて、最大で 1 になるようにする
   float o = (offset + unsignedPosition) * 0.5;
-  // uniform 変数 ratio の影響を加算した上で、0.0 ～ 1.0 にクランプする
+   // ★★ o は 0 ~ 1
+
   float merged = o + ratio * 2.0 - 1.0;
+  // ★★ -1 ~ 2 <- 0.0 ~ 1.0 を超えてる
+
+  // uniform 変数 ratio の影響を加算した上で、0.0 ～ 1.0 にクランプする
+   // ★★ clamp ：指定された範囲外の値は丸める
+   // -1 とかは 0 に丸められるので、動き出すまでに時間がかかる。
+   // よってランダム的な動きに見える。
   float clamped = clamp(merged, 0.0, 1.0);
 
   // 変化の割合いをもとに線形補間する

@@ -5,6 +5,7 @@ attribute vec3 spherePosition; // 球体の座標
 attribute vec4 sphereColor;    // 球体の色
 
 uniform float ratio; // 変化の割合い（0.0 ～ 1.0） @@@
+ // ★★ スライダーの値が ratio に送られてる
 uniform float time;
 uniform mat4 mvpMatrix;
 
@@ -12,6 +13,8 @@ varying vec4 vColor;
 
 void main() {
   // 変化の割合いをもとに線形補間する @@@
+  // ★★ 0.0 に近いほど、状態A、つまり第一引数
+  // ★★ 1.0 に近いほど、状態B、つまり第二引数
   vec3 p = mix(planePosition, spherePosition, ratio);
   vec4 c = mix(planeColor, sphereColor, ratio);
 

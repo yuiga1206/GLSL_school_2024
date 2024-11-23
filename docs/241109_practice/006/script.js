@@ -115,7 +115,7 @@ class WebGLApp {
 
     // 頂点を格子状に並べ、座標に応じた色を付け、大きさは揃える
     // ★★ -1 ~ 1 の範囲に並ぶようになっている
-    const COUNT = 20;
+    const COUNT = 40;
     for (let i = 0; i < COUNT; ++i) {
       const x = i / (COUNT - 1); // ヨコ方向を 0~1 の範囲で整列
       const signedX = x * 2.0 - 1.0;
@@ -124,8 +124,11 @@ class WebGLApp {
         const signedY = y * 2.0 - 1.0;
 
         this.position.push(signedX, signedY, 0.0);
-        this.color.push(x, y, 0.5, 1.0);
-        this.pointSize.push(8.0);
+        // this.color.push(x, y, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
+        // this.color.push(x, y, Math.random(), 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
+        this.color.push(0.5, 0.5, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
+        // this.pointSize.push(8.0);
+        this.pointSize.push(16.0);
       }
     }
 

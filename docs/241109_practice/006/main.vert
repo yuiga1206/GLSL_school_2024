@@ -70,23 +70,40 @@
 attribute vec3 position;
 attribute vec4 color;
 attribute float size;
+attribute float cOpacity;
 
-uniform float pointScale;
+// uniform float pointScale;
+uniform float circleSize;
 uniform vec2 mouse; // マウスカーソルの座標（-1.0 ~ 1.0）
 
 varying vec4 vColor;
+varying float vOpacity;
+
+
+// ===================
+// 【第一回の練習】
+// ・ピクセルとポインターの位置を、ピクセルrgba値のa値にセットする（距離が近い＝数値が小さいほど白くなる）。
+// ・スライダー調整でポインター付近の白くなる割合を変更できるようにする。
+// ・マウスからの距離にスライダーの値が乗算され、スライダーの値が大きくなればなるほど、a値が大きくなり、白い範囲が減っていく。
+// ===================
+
 
 void main() {
   vColor = color;
+  vOpacity = cOpacity;
 
   // 頂点座標からマウスの位置を指すベクトル
   // ★★ 頂点座標もマウスの位置も -1.0 ~ 1.0 の間にある
   // ★★ 終点 - 始点 でベクトルを表せる
   vec2 toMouse = mouse - position.xy;
+  // toMouse = toMouse * 50.0;
+  toMouse = toMouse * circleSize;
+  // toMouse = toMouse;
   // ベクトルの長さを測る
   // ★★ length() == ベクトルの長さを測る関数
   // ★★ 近ければ小さい（短い）、遠ければ大きい（長い）
-  float distanceToMouse = length(toMouse);
+  // float distanceToMouse = length(toMouse) * 2.0;
+  vOpacity = length(toMouse);
 
   // // ちょっとしたオマケで改造（マウスからの距離に応じて頂点を動かす）
   // // 方向だけに注目したいので、ベクトルを単位化する
@@ -100,5 +117,7 @@ void main() {
   gl_Position = vec4(position, 1.0);
 
   // ベクトルの長さを考慮して頂点のサイズを変化させる
-  gl_PointSize = size * pointScale * distanceToMouse;
+  // gl_PointSize = size * pointScale * distanceToMouse;
+  // gl_PointSize = size * pointScale;
+  gl_PointSize = size;
 }

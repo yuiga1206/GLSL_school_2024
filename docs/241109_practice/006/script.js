@@ -36,20 +36,20 @@ class WebGLApp {
     this.render = this.render.bind(this);
 
     // uniform 変数用
-    this.uPointSize = 1.0;
+    this.uCircleSize = 5.0;
     this.uMouse = [0.0, 0.0]; // マウス座標用
 
     // tweakpane を初期化
     const pane = new Pane();
     pane.addBlade({
       view: 'slider',
-      label: 'point-size',
-      min: 0.0,
-      max: 2.0,
-      value: this.uPointSize,
+      label: 'circle-size',
+      min: 1.0,
+      max: 10.0,
+      value: this.uCircleSize,
     })
     .on('change', (v) => {
-      this.uPointSize = v.value;
+      this.uCircleSize = v.value;
     });
 
     // マウス座標用のイベントを設定
@@ -80,14 +80,16 @@ class WebGLApp {
         'position',
         'color',
         'size',
+        'cOpacity',
       ],
       stride: [
         3,
         4,
         1,
+        1,
       ],
       uniform: [
-        'pointScale',
+        'circleSize',
         'mouse', // マウスの座標を渡すための uniform 変数
       ],
       type: [
@@ -112,10 +114,11 @@ class WebGLApp {
     this.position = [];
     this.color = [];
     this.pointSize = [];
+    this.cOpacity = [];
 
     // 頂点を格子状に並べ、座標に応じた色を付け、大きさは揃える
     // ★★ -1 ~ 1 の範囲に並ぶようになっている
-    const COUNT = 40;
+    const COUNT = 100;
     for (let i = 0; i < COUNT; ++i) {
       const x = i / (COUNT - 1); // ヨコ方向を 0~1 の範囲で整列
       const signedX = x * 2.0 - 1.0;
@@ -125,10 +128,11 @@ class WebGLApp {
 
         this.position.push(signedX, signedY, 0.0);
         // this.color.push(x, y, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
-        // this.color.push(x, y, Math.random(), 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
-        this.color.push(0.5, 0.5, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
+        this.color.push(x, y, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
+        // this.color.push(0.5, 0.5, 0.5, 1.0); // →に進むほどR値が高く、↑に進むほどG値が高くなる
         // this.pointSize.push(8.0);
         this.pointSize.push(16.0);
+        this.cOpacity.push(Math.random());
       }
     }
 
@@ -136,6 +140,7 @@ class WebGLApp {
       WebGLUtility.createVbo(this.gl, this.position),
       WebGLUtility.createVbo(this.gl, this.color),
       WebGLUtility.createVbo(this.gl, this.pointSize),
+      WebGLUtility.createVbo(this.gl, this.cOpacity),
     ];
   }
   /**
@@ -157,7 +162,7 @@ class WebGLApp {
     this.shaderProgram.use();
     this.shaderProgram.setAttribute(this.vbo);
     this.shaderProgram.setUniform([
-      this.uPointSize,
+      this.uCircleSize,
       this.uMouse, // マウス座標用
     ]);
 

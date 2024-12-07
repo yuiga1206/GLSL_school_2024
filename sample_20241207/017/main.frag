@@ -57,8 +57,18 @@ void main() {
     vec3 normal = generateNormal(ray);
     // 算出した法線で拡散光（diffuse lighting）を計算する @@@
     vec3 light = normalize(vec3(1.0, 1.0, param.z));
+    // （法線もライトの向きも）両方とも単位化されていることが重要
     float diffuse = max(dot(normal, light), 0.1);
     destColor = vec3(diffuse);
+
+    // ライトの色を変更したい
+    // 内積を使って求めた値が、明るさとして使えるな！
+    // vec3 rgb = vec3(1.0, 0.8, 0.5);
+    // destColor = rgb * vec3(diffuse);
+
+    // 色デバッグ：資料P66~67
+    // 法線を色で確認
+    // destColor = normal;
   }
 
   gl_FragColor = vec4(destColor, 1.0);

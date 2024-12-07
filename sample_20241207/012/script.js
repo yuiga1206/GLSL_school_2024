@@ -147,6 +147,7 @@ class WebGLApp {
     // uniform 変数を設定し描画する
     this.shaderProgram.setUniform([
       [this.canvas.width, this.canvas.height], // canvas の解像度
+      // ★★ ↑フラグメントシェーダで使う resolution の中身
       this.uTime, // 時間の経過
       this.uParam, // 汎用パラメータ
     ]);

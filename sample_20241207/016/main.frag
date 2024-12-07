@@ -8,6 +8,7 @@ const float EPS = 0.0001; // イプシロン（微小な値の意）
 const int ITR = 16; // イテレーション回数
 
 // 球の距離関数
+// レイの先端の位置を引数から受け取り、該当のオブジェクトとの距離を返す
 float map(vec3 p) {
   float radius = 2.0 + param.y;
   return length(p) - radius;
@@ -15,10 +16,19 @@ float map(vec3 p) {
 
 void main() {
   // まずスクリーン座標を正規化する
+    // ピクセル座標を2倍して、解像度を引く
+      // 0 ~ 1000, 0 ~ 500 -> 
+      // 0 ~ 2000, 0 ~ 1000 -> 
+      // -1000 ~ 1000, -500 ~ 500
+    // -2 ~ 2, -1 ~ 1
+    // 短辺のほうを -1 ~ 1 に合わせて、長辺は相対的な長さになるようにしている
   vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+
   // 正規化したスクリーン座標に Z の情報を与え、さらに正規化する
-  float focus = 1.0 + param.x;
+  float focus = 1.0 + param.x; // 奥行きの、どこにフォーカスするか（大きくも小さくもなり得る）
+  // レイの向きを決めるとき、フォーカスする深度は変化するため、向きだけに注目したいから単位化する
   vec3 rayDirection = normalize(vec3(p, -focus));
+  // ↑ normalize で単位化（=正規化）する。つまり向きだけに注目する
 
   // レイの原点
   vec3 origin = vec3(0.0, 0.0, 5.0);

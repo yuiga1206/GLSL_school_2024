@@ -15,14 +15,17 @@ void main() {
   // ０．特に座標は変換しない場合
 
   // １．座標系を複製する
+  // ★★ ↓ -8.0 ~ 8.0 の範囲になる
   // float scale = 8.0; // 正規化した座標系に適用するスケール
   // float space = 2.0; // 複製された空間の広さ
   // signedCoord = mod(signedCoord * scale, space) - space * 0.5;
+  // ★★ mod => 割った余りを求める。　mod(割られる数, 割る数)　mod(10, 3) = 1
+  // mod を使うことで、一定の範囲を小さなブロックを並べたように繰り返させることができる。
 
   // ２．座標系を回転する
-  // float s = sin(time * param.w);
-  // float c = cos(time * param.w);
-  // signedCoord = mat2(c, -s, s, c) * signedCoord;
+  float s = sin(time * param.w);
+  float c = cos(time * param.w);
+  signedCoord = mat2(c, -s, s, c) * signedCoord;
 
   // ループを使ってラインを複数処理する
   float lightness = 0.0;

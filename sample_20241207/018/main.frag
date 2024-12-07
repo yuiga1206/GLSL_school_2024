@@ -9,6 +9,7 @@ const int ITR = 16; // イテレーション回数
 
 // 座標系を一定の範囲に限定することで複製する @@@
 vec3 repetition(vec3 p, vec3 width) {
+  // 014 の座標系の複製と同じ
   return mod(p, width) - width * 0.5;
 }
 // 球の距離関数

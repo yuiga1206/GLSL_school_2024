@@ -8,7 +8,7 @@ varying vec2 vTexCoord;
 const vec3 DIRECTIONAL_LIGHT = normalize(vec3(1.0, 1.0, 1.0));
 
 void main() {
-  // 内積を用いて平行光源の影響を計算する
+  // 内積を用いて平行光源の影響を計算する（陰性付けをする）
   float diffuse = dot(normalize(vNormal), DIRECTIONAL_LIGHT) * 0.5 + 0.5;
   // テクスチャの色
   vec4 samplerColor = texture2D(textureUnit, vTexCoord);

@@ -9,7 +9,7 @@ varying vec3 vNormal;
 varying vec2 vTexCoord;
 
 void main() {
-  // 法線変換行列を使って法線を変換する
+  // 法線変換行列を使って法線を変換する（陰影付けのために使う）
   vNormal = (normalMatrix * vec4(normal, 0.0)).xyz;
   // テクスチャ座標はそのまま
   vTexCoord = texCoord;

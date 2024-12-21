@@ -193,12 +193,14 @@ export class WebGLUtility {
   static createFramebuffer(gl, width, height) {
     const frameBuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+    // ★★ 深度バッファ（RenderBuffer とは、汎用的なバッファ）
     const depthRenderBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthRenderBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthRenderBuffer);
     const fTexture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, fTexture);
+    // ★★ 画像をテクスチャに割り当てる場合は、最終引数が画像になるが、ここでは null
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);

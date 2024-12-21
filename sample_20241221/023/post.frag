@@ -16,7 +16,7 @@ float interpolate(float a, float b, float x) {
   float f = (1.0 - cos(x * PI)) * 0.5;
   return a * (1.0 - f) + b * f;
 }
-// 乱数生成器
+// 乱数生成器（乱数自体を生成する関数）
 float rnd(vec2 n) {
   float a = 0.129898;
   float b = 0.78233;
@@ -67,7 +67,8 @@ void main() {
   gl_FragColor = vec4(vec3(gray) * n, 1.0);
 
   // 炎風（ここではサークル状に炎の輪を出している）
-  vec2 coord = vTexCoord * 2.0 - 1.0;
+  vec2 coord = vTexCoord * 2.0 - 1.0;// ★★ 原点を中心に。
+  // ★★ カーソルから 0.5 離れた位置に円が来るように。
   float m = intensity * 0.1 / abs(length(mouse - coord) - 0.5);
   vec3 fire = vec3(1.0, 0.4, 0.1) * m * m;
   float contrastNoise = pow(n, contrast);

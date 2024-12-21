@@ -269,6 +269,7 @@ class WebGLApp {
     const gl = this.gl;
     const m4 = WebGLMath.Mat4;
     const v3 = WebGLMath.Vec3;
+    // ★★ テクスチャが貼られた、球体が置かれているシーンを、フレームバッファに焼き付けたい
 
     // フレームバッファのバインド @@@
     // ※これ以降、描画はフレームバッファに対して行われる
@@ -329,6 +330,9 @@ class WebGLApp {
    */
   renderPostProcess() {
     const gl = this.gl;
+
+    // ★★ 画面に描画結果が出て欲しいので、フレームバッファのバインドを解除
+
     // フレームバッファのバインドを解除
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
